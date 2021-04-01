@@ -80,6 +80,8 @@ bool CheckForHFSPrivateDataNode(HFSPlusCatalogKey key) {
 
 void PrintHFSUnicode(HFSUniStr255 str) {
     for (int i = 0; i < str.length; i++) {
-        printf("%lc", str.unicode[i]);
+        if (str.unicode[i] >= 32) {
+            printf("%lc", str.unicode[i]);
+        }
     }
 }
