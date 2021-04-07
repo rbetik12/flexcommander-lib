@@ -41,12 +41,12 @@ int IterateDevices(FlexCommanderProbeInfo* info) {
                     printf("%lld MiB\t", (long long) (probeSize / mibibyteDivider));
                 }
                 blkid_do_probe(probe);
-                const char * fsType;
+                const char *fsType;
                 blkid_probe_lookup_value(probe, "TYPE", &fsType, NULL);
-                printf("%s\n", fsType);
+                printf("%s", fsType);
             }
-
         }
+        printf("\n");
     }
 
     blkid_dev_iterate_end(iterator);
