@@ -30,13 +30,18 @@ typedef struct FlexCommanderFS {
     HFSPlusVolumeHeader volumeHeader;
 } FlexCommanderFS;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 //Functions for block device probing
-int EXPORT Init(FlexCommanderProbeInfo* info);
-int EXPORT ProbeDevices(FlexCommanderProbeInfo* info);
-int EXPORT IterateDevices(FlexCommanderProbeInfo* info);
-
+int EXPORT Init(FlexCommanderProbeInfo *info);
+int EXPORT ProbeDevices(FlexCommanderProbeInfo *info);
+int EXPORT IterateDevices(FlexCommanderProbeInfo *info);
 //Functions for filesystem interaction
-int FlexOpen(const char * path, FlexCommanderFS* fs);
-int FlexListDirContent(const char* path, FlexCommanderFS* fs);
-int FlexSetCurrentDir(const char* path, FlexCommanderFS* fs);
-int FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs);
+int EXPORT FlexOpen(const char * path, FlexCommanderFS* fs);
+int EXPORT FlexListDirContent(const char* path, FlexCommanderFS* fs);
+int EXPORT FlexSetCurrentDir(const char* path, FlexCommanderFS* fs);
+int EXPORT FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs);
+#ifdef __cplusplus
+}
+#endif
