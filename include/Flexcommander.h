@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <blkid/blkid.h>
 #include "HFSPlus.h"
+#include "HFSPlusBTree.h"
+//#include "../src/include/List.h"
 
 #if defined(_MSC_VER)
 //  Microsoft
@@ -19,6 +21,10 @@
     #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
+//#include "../src/include/List.h"
+
+typedef struct PathListNode PathListNode;
+
 typedef struct FlexCommanderProbeInfo {
     blkid_cache blkCache;
 } FlexCommanderProbeInfo;
@@ -28,6 +34,7 @@ typedef struct FlexCommanderFS {
     uint32_t blockSize;
     uint64_t catalogFileBlock;
     HFSPlusVolumeHeader volumeHeader;
+    PathListNode* output;
 } FlexCommanderFS;
 
 #ifdef __cplusplus

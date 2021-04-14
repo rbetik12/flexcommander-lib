@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <FlexIO.h>
 #include "Endians.h"
+#include <List.h>
 
 void GetNextBlockNum(uint64_t* _nodeBlockNumber, uint64_t* _extentNum, uint64_t* _currentBlockNum,
                      BTNodeDescriptor descriptor, FlexCommanderFS fs) {
@@ -78,10 +79,17 @@ bool CheckForHFSPrivateDataNode(HFSPlusCatalogKey key) {
     return true;
 }
 
-void PrintHFSUnicode(HFSUniStr255 str) {
+void PrintHFSUnicode(HFSUniStr255 str, FlexCommanderFS* fs) {
+    char* strPtr = (char*) calloc(str.length, sizeof(char));
     for (int i = 0; i < str.length; i++) {
         if (str.unicode[i] >= 32) {
-            printf("%lc", str.unicode[i]);
+//            printf("%lc", str.unicode[i]);
+            if (str.unicode[i] >= 32) {
+                strPtr[i] = str.unicode[i];
+            }
         }
     }
+    PathListNode pathListNode;
+    pathListNode.token = strPtr;
+    PathListAdd(&fs->output, pathListNode);
 }

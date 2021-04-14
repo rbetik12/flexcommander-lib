@@ -11,7 +11,7 @@ void FillRecordAddress(BTHeaderRec btreeHeader, BTNodeDescriptor descriptor, cha
 char *HFSStringToBytes(HFSUniStr255 hfsStr);
 bool HFSStrToStrCmp(HFSUniStr255 hfsStr, const char *str);
 bool CheckForHFSPrivateDataNode(HFSPlusCatalogKey key);
-void PrintHFSUnicode(HFSUniStr255 str);
+void PrintHFSUnicode(HFSUniStr255 str, FlexCommanderFS* fs);
 
 // Use only with structures. Idk why, but it doesn't work with 4 byte values.
 #define CAST_PTR_TO_TYPE(type, ptr) *(type*)ptr

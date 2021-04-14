@@ -37,7 +37,8 @@ uint32_t ParseLeafNode(char *rawNode, const char *folderName, uint32_t folderPar
     return 0;
 }
 
-void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHeader, BTNodeDescriptor descriptor) {
+void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHeader, BTNodeDescriptor descriptor,
+                          FlexCommanderFS *fs) {
     uint16_t recordAddress[descriptor.numRecords];
     FillRecordAddress(btreeHeader, descriptor, rawNode, recordAddress);
 
@@ -56,22 +57,25 @@ void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHea
             continue;
         }
 
-        PrintHFSUnicode(key.nodeName);
+        PrintHFSUnicode(key.nodeName, fs);
+        PathListNode pathListNode;
 
         switch (recordType) {
             case FolderRecord:
                 catalogFolder = CAST_PTR_TO_TYPE(HFSPlusCatalogFolder,
                                                  (rawNode + recordAddress[i] + key.keyLength + sizeof(key.keyLength)));
                 ConvertCatalogFolder(&catalogFolder);
-                printf("\t");
-                PrintPermissions(catalogFolder.permissions, FolderRecord);
+                pathListNode.token = "\t";
+                PathListAdd(&fs->output, pathListNode);
+                PrintPermissions(catalogFolder.permissions, FolderRecord, fs);
                 break;
             case FileRecord:
                 catalogFile = CAST_PTR_TO_TYPE(HFSPlusCatalogFile,
                                                (rawNode + recordAddress[i] + key.keyLength + sizeof(key.keyLength)));
                 ConvertCatalogFile(&catalogFile);
-                printf("\t");
-                PrintPermissions(catalogFolder.permissions, FileRecord);
+                pathListNode.token = "\t";
+                PathListAdd(&fs->output, pathListNode);
+                PrintPermissions(catalogFolder.permissions, FileRecord, fs);
                 break;
             case FileThreadRecord:
             case FolderThreadRecord:
@@ -80,27 +84,29 @@ void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHea
                 fprintf(stderr, "Unknown data record type!\n");
                 break;
         }
-        printf("\n");
+//        printf("\n");
+        pathListNode.token = "\n";
+        PathListAdd(&fs->output, pathListNode);
     }
 }
 
-void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FlexCommanderFS fs) {
-    char *rawNode = calloc(sizeof(char), fs.blockSize);
-    uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs.catalogFileBlock;
+void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FlexCommanderFS *fs) {
+    char *rawNode = calloc(sizeof(char), fs->blockSize);
+    uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs->catalogFileBlock;
     BTNodeDescriptor descriptor;
     bool isLastNode = false;
     uint64_t extentNum = 0;
     uint64_t currentBlockNum = catalogBTHeader.firstLeafNode;
 
     while (!isLastNode) {
-        ReadNodeDescriptor(fs, nodeBlockNumber, &descriptor, rawNode);
+        ReadNodeDescriptor(*fs, nodeBlockNumber, &descriptor, rawNode);
         if (descriptor.fLink == 0) {
             isLastNode = true;
         }
 
-        ParseLeafNodeContent(rawNode, parentID, catalogBTHeader, descriptor);
+        ParseLeafNodeContent(rawNode, parentID, catalogBTHeader, descriptor, fs);
 
-        GetNextBlockNum(&nodeBlockNumber, &extentNum, &currentBlockNum, descriptor, fs);
+        GetNextBlockNum(&nodeBlockNumber, &extentNum, &currentBlockNum, descriptor, *fs);
     }
 
     free(rawNode);

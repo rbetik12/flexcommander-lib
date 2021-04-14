@@ -3,6 +3,8 @@
 #include <wchar.h>
 #include <stdlib.h>
 #include "HFSCatalog.h"
+#include <Flexcommander.h>
+#include <List.h>
 
 void PrintCatalogKey(HFSPlusCatalogKey key) {
     setlocale(LC_CTYPE, "");
@@ -56,7 +58,7 @@ void PrintCatalogIndexNode(BTCatalogIndexNode node) {
     printf("Index: %d\n", node.nextNode);
 }
 
-void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType) {
+void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, FlexCommanderFS* fs) {
     const uint32_t ownerMask = 0000700;
     const uint32_t groupMask = 0000070;
     const uint32_t otherMask = 0000007;
@@ -64,102 +66,117 @@ void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType) 
     const uint32_t groupRights = permissions.fileMode & groupMask;
     const uint32_t otherRights = permissions.fileMode & otherMask;
 
+    PathListNode pathListNode;
     switch (recordType) {
         case FolderRecord:
-            printf("d");
+            pathListNode.token = "d";
+//            printf("d");
             break;
         default:
-            printf("-");
+            pathListNode.token = "-";
+//            printf("-");
             break;
     }
+
+    PathListAdd(&fs->output, pathListNode);
 
     switch (ownerRights) {
         case 0:
-            printf("---");
+            pathListNode.token = "---";
+//            printf("---");
             break;
         case S_IXUSR:
-            printf("--x");
+            pathListNode.token = "--x";
+//            printf("--x");
             break;
         case S_IWUSR:
-            printf("-w-");
+            pathListNode.token = "-w-";
+//            printf("-w-");
             break;
         case S_IXUSR + S_IWUSR:
-            printf("-wx");
+            pathListNode.token = "-wx";
+//            printf("-wx");
             break;
         case S_IRUSR:
-            printf("r--");
+            pathListNode.token = "r--";
+//            printf("r--");
             break;
         case S_IRUSR + S_IXUSR:
-            printf("r-x");
+            pathListNode.token = "r-x";
+//            printf("r-x");
             break;
         case S_IRUSR + S_IWUSR:
-            printf("rw-");
+            pathListNode.token = "rw-";
+//            printf("rw-");
             break;
         case S_IRWXU:
-            printf("rwx");
+            pathListNode.token = "rwx";
+//            printf("rwx");
             break;
         default:
             printf("???");
             break;
     }
 
-    switch (groupRights) {
-        case 0:
-            printf("---");
-            break;
-        case S_IXGRP:
-            printf("--x");
-            break;
-        case S_IWGRP:
-            printf("-w-");
-            break;
-        case S_IXGRP + S_IWGRP:
-            printf("-wx");
-            break;
-        case S_IRGRP:
-            printf("r--");
-            break;
-        case S_IRGRP + S_IXGRP:
-            printf("r-x");
-            break;
-        case S_IRGRP + S_IWGRP:
-            printf("rw-");
-            break;
-        case S_IRWXG:
-            printf("rwx");
-            break;
-        default:
-            printf("???");
-            break;
-    }
+    PathListAdd(&fs->output, pathListNode);
 
-    switch (otherRights) {
-        case 0:
-            printf("---");
-            break;
-        case S_IXOTH:
-            printf("--x");
-            break;
-        case S_IWOTH:
-            printf("-w-");
-            break;
-        case S_IXOTH + S_IWOTH:
-            printf("-wx");
-            break;
-        case S_IROTH:
-            printf("r--");
-            break;
-        case S_IROTH + S_IXOTH:
-            printf("r-x");
-            break;
-        case S_IROTH + S_IWOTH:
-            printf("rw-");
-            break;
-        case S_IRWXO:
-            printf("rwx");
-            break;
-        default:
-            printf("???");
-            break;
-    }
+//    switch (groupRights) {
+//        case 0:
+//            printf("---");
+//            break;
+//        case S_IXGRP:
+//            printf("--x");
+//            break;
+//        case S_IWGRP:
+//            printf("-w-");
+//            break;
+//        case S_IXGRP + S_IWGRP:
+//            printf("-wx");
+//            break;
+//        case S_IRGRP:
+//            printf("r--");
+//            break;
+//        case S_IRGRP + S_IXGRP:
+//            printf("r-x");
+//            break;
+//        case S_IRGRP + S_IWGRP:
+//            printf("rw-");
+//            break;
+//        case S_IRWXG:
+//            printf("rwx");
+//            break;
+//        default:
+//            printf("???");
+//            break;
+//    }
+//
+//    switch (otherRights) {
+//        case 0:
+//            printf("---");
+//            break;
+//        case S_IXOTH:
+//            printf("--x");
+//            break;
+//        case S_IWOTH:
+//            printf("-w-");
+//            break;
+//        case S_IXOTH + S_IWOTH:
+//            printf("-wx");
+//            break;
+//        case S_IROTH:
+//            printf("r--");
+//            break;
+//        case S_IROTH + S_IXOTH:
+//            printf("r-x");
+//            break;
+//        case S_IROTH + S_IWOTH:
+//            printf("rw-");
+//            break;
+//        case S_IRWXO:
+//            printf("rwx");
+//            break;
+//        default:
+//            printf("???");
+//            break;
+//    }
 }

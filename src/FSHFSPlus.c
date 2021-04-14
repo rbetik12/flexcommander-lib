@@ -136,13 +136,15 @@ int FlexListDirContent(const char *path, FlexCommanderFS *fs) {
     BTHeaderRec catalogFileHeader;
     ExtractCatalogBtreeHeader(fs->catalogFileBlock, &catalogFileHeader, fs);
 
+    fs->output = NULL;
+
     uint32_t parentID = 2;
     while (list) {
         if (list->next == NULL) {
             if (parentID == 0) {
                 printf("Path doesn't exist!\n");
             }
-            ListDirectoryContent(parentID, catalogFileHeader, *fs);
+            ListDirectoryContent(parentID, catalogFileHeader, fs);
             break;
         }
         else {
@@ -150,6 +152,11 @@ int FlexListDirContent(const char *path, FlexCommanderFS *fs) {
         }
         list = list->next;
     }
+
+//    while (fs->output != NULL) {
+//        printf("%s", fs->output->token);
+//        fs->output = fs->output->next;
+//    }
 
     PathListClear(listStart);
     return 0;

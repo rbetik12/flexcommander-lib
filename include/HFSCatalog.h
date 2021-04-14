@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HFSPlus.h"
+#include "Flexcommander.h"
 
 struct __attribute__((__packed__)) HFSPlusCatalogKey {
     UInt16              keyLength;
@@ -139,4 +140,4 @@ void PrintCatalogFolder(HFSPlusCatalogFolder folder);
 void PrintCatalogFile(HFSPlusCatalogFile file);
 void PrintCatalogThread(HFSPlusCatalogThread thread);
 void PrintCatalogIndexNode(BTCatalogIndexNode node);
-void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType);
+void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, FlexCommanderFS* fs);

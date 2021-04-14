@@ -11,7 +11,7 @@ typedef struct PathListNode {
 typedef struct FSRecordListNode {
     uint32_t cnid;
     HFSUniStr255 name;
-    enum HFSDataRecordType type;
+    HFSDataRecordType type;
     struct FSRecordListNode* next;
 } FSRecordListNode;
 

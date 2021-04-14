@@ -1,10 +1,10 @@
 #pragma once
 
-#include <List.h>
 #include <stdbool.h>
 #include "HFSPlus.h"
 #include "Flexcommander.h"
 #include "../src/copy/Copy.h"
+//#include <List.h>
 
 enum BTNodeType {
     LeafNode = -1,
@@ -54,14 +54,16 @@ struct __attribute__((__packed__)) BTHeaderRec {
 };
 typedef struct BTHeaderRec BTHeaderRec;
 
+typedef struct PathListNode PathListNode;
+
 void PrintBTreeHeader(BTHeaderRec header);
 void PrintBTreeNodeDescriptor(BTNodeDescriptor descriptor);
 uint32_t ParseLeafNode(char* rawNode, const char* folderName, uint32_t folderParentId, BTHeaderRec btreeHeader, BTNodeDescriptor descriptor);
 uint32_t FindIdOfFolder(const char* folderName, uint32_t folderParentId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs);
-uint32_t ParseLeafNodeWithCondition(char *rawNode, const char *folderName, uint32_t folderParentId, BTHeaderRec btreeHeader,
-                                    BTNodeDescriptor descriptor, enum HFSDataRecordType _recordType);
+//uint32_t ParseLeafNodeWithCondition(char *rawNode, const char *folderName, uint32_t folderParentId, BTHeaderRec btreeHeader,
+//                                    BTNodeDescriptor descriptor, enum HFSDataRecordType _recordType);
 uint32_t FindIdOfFile(const char *fileName, uint32_t folderParentId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs);
-void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FlexCommanderFS fs);
+void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FlexCommanderFS *fs);
 HFSPlusCatalogFile* GetFileRecord(uint32_t fileId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs);
 PathListNode* GetChildrenDirectoriesList(uint32_t parentFolderId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs, CopyInfo copyInfo);
 

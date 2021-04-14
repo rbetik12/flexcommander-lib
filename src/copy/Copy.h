@@ -1,10 +1,13 @@
 #pragma once
 
 #include <stdint.h>
-#include <Flexcommander.h>
-#include <HFSPlusBTree.h>
+//#include <Flexcommander.h>
+//#include <HFSPlusBTree.h>
+//#include <HFSCatalog.h>
 
 typedef struct BTHeaderRec BTHeaderRec;
+typedef struct HFSPlusCatalogFile HFSPlusCatalogFile;
+typedef struct FlexCommanderFS FlexCommanderFS;
 
 void MakePath(char* dir);
 void CopyFile(const char* dest, const char* filename, HFSPlusCatalogFile file, FlexCommanderFS *fs);
