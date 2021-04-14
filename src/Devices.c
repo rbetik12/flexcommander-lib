@@ -1,8 +1,8 @@
 #include <Flexcommander.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include <stdbool.h>
+#include <List.h>
+#include <memory.h>
 
 bool isRoot = true;
 
@@ -16,39 +16,37 @@ int ProbeDevices(FlexCommanderProbeInfo* info) {
     return 0;
 }
 
-int IterateDevices(FlexCommanderProbeInfo* info) {
+PathListNode* IterateDevices(FlexCommanderProbeInfo* info) {
     blkid_dev device;
     blkid_dev_iterate iterator = blkid_dev_iterate_begin(info->blkCache);
-    const double gibibyteDivider = pow(2, 30);
-    const double mibibyteDivider = pow(2, 20);
+    PathListNode* list = NULL;
+    PathListNode node;
 
     while (blkid_dev_next(iterator, &device) == 0) {
         const char * devName = blkid_dev_devname(device);
-        printf("%s", devName);
+        node.token = devName;
+        PathListAdd(&list, node);
 
         if (isRoot) {
             blkid_probe probe = blkid_new_probe_from_filename(devName);
             if (probe == NULL) {
-                fprintf(stderr, "Launch util as root to get more information!\n");
+                node.token = "Launch util as root to get more info!\n";
+                PathListAdd(&list, node);
                 isRoot = false;
             }
             else {
-                blkid_loff_t probeSize = blkid_probe_get_size(probe);
-                printf("\t");
-                if (probeSize >= gibibyteDivider) {
-                    printf("%lld GiB\t", (long long) (probeSize / gibibyteDivider));
-                } else if (probeSize < gibibyteDivider) {
-                    printf("%lld MiB\t", (long long) (probeSize / mibibyteDivider));
-                }
+                node.token = "\t";
+                PathListAdd(&list, node);
                 blkid_do_probe(probe);
                 const char *fsType;
                 blkid_probe_lookup_value(probe, "TYPE", &fsType, NULL);
-                printf("%s", fsType);
+                node.token = fsType;
+                PathListAdd(&list, node);
             }
         }
-        printf("\n");
+        node.token = "\n";
+        PathListAdd(&list, node);
     }
-
     blkid_dev_iterate_end(iterator);
-    return 0;
+    return list;
 }

@@ -43,7 +43,7 @@ extern "C" {
 //Functions for block device probing
 int EXPORT Init(FlexCommanderProbeInfo *info);
 int EXPORT ProbeDevices(FlexCommanderProbeInfo *info);
-int EXPORT IterateDevices(FlexCommanderProbeInfo *info);
+PathListNode* EXPORT IterateDevices(FlexCommanderProbeInfo *info);
 //Functions for filesystem interaction
 int EXPORT FlexOpen(const char * path, FlexCommanderFS* fs);
 int EXPORT FlexListDirContent(const char* path, FlexCommanderFS* fs);
